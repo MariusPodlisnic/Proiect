@@ -4,24 +4,19 @@ namespace StocareData
 {
     public class AdministrareQuizMemorie
     {
-        // vectorul de obiecte în care se salvează datele
+        
         public List<Intrebare> intrebari = new List<Intrebare>();
 
-        // căutare după id (criteriu exact)
+        //cautare dupa id folosing Linq
         public static Intrebare GetIntrebare(List<Intrebare> intrebari, int idIntrebare)
         {
-            foreach (Intrebare intrebare in intrebari)
-            {
-                if (intrebare.IdIntrebare == idIntrebare)
-                {
-                    Console.WriteLine("Intrebarea se regaseste in lista!");
-                    return intrebare;
-                }
-            }
-            return null;
+            Intrebare intrebare = intrebari.FirstOrDefault(i => i.IdIntrebare == idIntrebare);
+            if (intrebare != null)
+                Console.WriteLine("Intrebarea se regaseste in lista!");
+            return intrebare;
         }
 
-        // căutare după domeniu (criteriu parțial - returnează listă)
+        //cautare dupa domeniu
         public static List<Intrebare> GetIntrebariiDupaDomeniu(List<Intrebare> intrebari, string domeniu)
         {
             List<Intrebare> rezultat = new List<Intrebare>();
@@ -36,7 +31,7 @@ namespace StocareData
             return rezultat;
         }
 
-        // citire intrebare de la tastatura
+       
         public static Intrebare CitireIntrebareTastatura()
         {
             Console.WriteLine("Introduceti domeniul (C/C++, Java, Python, General)");
@@ -59,11 +54,17 @@ namespace StocareData
             Console.WriteLine("Introduceti indexul raspunsului corect (0=A, 1=B, 2=C, 3=D):");
             int.TryParse(Console.ReadLine(), out int raspunsCorect);
 
-            Intrebare intrebare = new Intrebare(0, domeniu, text, variante, raspunsCorect);
+            Console.WriteLine("Dificultate (Usor, Mediu, Greu):");
+            Enum.TryParse(Console.ReadLine(), out Dificultate dificultate);
+
+            Console.WriteLine("Tip cunostinte (Teorie, Practica, Sintaxa, Algoritmi):");
+            Enum.TryParse(Console.ReadLine(), out TipCunostinte tipCunostinte);
+
+            Intrebare intrebare = new Intrebare(0, domeniu, text, variante, raspunsCorect, dificultate, tipCunostinte);
             return intrebare;
         }
 
-        // modificare variante pentru o intrebare după id
+        // modificarea variantelor din intrebare
         public bool ModificaVarianteIntrebare(string[] varianteNoi, int idIntrebare)
         {
             foreach (Intrebare intrebare in intrebari)

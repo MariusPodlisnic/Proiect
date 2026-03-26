@@ -1,15 +1,32 @@
 ﻿namespace LibraryUserAndIntrebari
 {
+    public enum Dificultate
+    {
+        Usor,
+        Mediu,
+        Greu
+    }
+    [Flags]
+    public enum TipCunostinte
+    {
+        Niciuna = 0,
+        Teorie = 1,
+        Practica = 2,
+        Sintaxa = 4,
+        Algoritmi = 8
+    }
     public class Intrebare
     {
-        // data membră privată
+        
         private string[] variante;
 
-        // proprietăți auto-implemented
+        
         public int IdIntrebare { get; set; }
         public string Domeniu { get; set; }
         public string TextIntrebare { get; set; }
-        public int RaspunsCorect { get; set; } // indexul variantei corecte (0=A, 1=B, ...)
+        public int RaspunsCorect { get; set; }
+        public Dificultate Dificultate { get; set; }
+        public TipCunostinte TipCunostinte { get; set; }
 
         public void SetVariante(string[] _variante)
         {
@@ -19,20 +36,20 @@
 
         public string[] GetVariante()
         {
-            // returnează o copie pentru a proteja datele interne
             return (string[])variante.Clone();
         }
 
-        // constructor implicit
+        
         public Intrebare()
         {
             Domeniu = string.Empty;
             TextIntrebare = string.Empty;
             variante = new string[0];
             RaspunsCorect = 0;
+            Dificultate = Dificultate.Usor;
+            TipCunostinte = TipCunostinte.Niciuna;
         }
 
-        // constructor cu parametri
         public Intrebare(int idIntrebare, string domeniu, string textIntrebare,
                          string[] _variante, int raspunsCorect)
         {
@@ -42,6 +59,21 @@
             RaspunsCorect = raspunsCorect;
             variante = new string[_variante.Length];
             _variante.CopyTo(variante, 0);
+            Dificultate = Dificultate.Usor;
+            TipCunostinte = TipCunostinte.Niciuna;
+        }
+        public Intrebare(int idIntrebare, string domeniu, string textIntrebare,
+                         string[] _variante, int raspunsCorect,
+            Dificultate dificultate, TipCunostinte tipCunostinte)
+        {
+            IdIntrebare = idIntrebare;
+            Domeniu = domeniu;
+            TextIntrebare = textIntrebare;
+            RaspunsCorect = raspunsCorect;
+            variante = new string[_variante.Length];
+            _variante.CopyTo(variante, 0);
+            Dificultate = dificultate;
+            TipCunostinte = tipCunostinte;
         }
 
         public string Info()
@@ -60,7 +92,9 @@
             string info = $"Id:{IdIntrebare} Domeniu:{Domeniu ?? "NECUNOSCUT"}" +
                           $"\n   Intrebare:{TextIntrebare ?? "NECUNOSCUT"}" +
                           $"{sVariante}" +
-                          $"\n   Raspuns corect:{(char)('A' + RaspunsCorect)}";
+                          $"\n   Raspuns corect:{(char)('A' + RaspunsCorect)}" +
+                          $"\n   Dificultate:{Dificultate}" +
+                          $"\n   Tip cunostinte:{TipCunostinte}";
             return info;
         }
     }

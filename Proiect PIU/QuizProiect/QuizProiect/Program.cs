@@ -83,8 +83,6 @@ namespace ProiectPiu
 
             Console.ReadKey();
         }
-
-        // 3. AFISARE DATE DIN VECTOR DE OBIECTE
         public static void AfisareIntrebare(Intrebare intrebare)
         {
             if (intrebare == null)
