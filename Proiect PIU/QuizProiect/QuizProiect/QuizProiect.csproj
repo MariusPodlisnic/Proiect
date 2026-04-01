@@ -12,4 +12,8 @@
     <ProjectReference Include="..\StocareData\StocareData.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
