@@ -14,6 +14,7 @@ namespace StocareData
         private const int INCREMENT = 1;
         private string numeFisier;
 
+        // constructor
         public AdministrareIntrebariFisierText(string numeFisier)
         {
             this.numeFisier = numeFisier;
@@ -21,6 +22,7 @@ namespace StocareData
             streamFisierText.Close();
         }
 
+        //salvare
         public void AddIntrebare(Intrebare intrebare)
         {
             intrebare.IdIntrebare = GetNextIdIntrebare();
@@ -31,6 +33,7 @@ namespace StocareData
             }
         }
 
+        //citire
         public List<Intrebare> GetIntrebari()
         {
             List<Intrebare> intrebari = new List<Intrebare>();

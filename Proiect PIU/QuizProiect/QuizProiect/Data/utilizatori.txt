@@ -8,5 +8,4 @@
 8,Ciobanu,Ana,19
 9,Marin,Victor,24
 10,Nicolae,Laura,21
-11,Ion,Antonescu,33
 12,Utilizator,Uti,1

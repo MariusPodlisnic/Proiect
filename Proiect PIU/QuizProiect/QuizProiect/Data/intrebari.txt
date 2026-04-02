@@ -1,11 +1,7 @@
-1,Java,ce,1|2|3|4,0,Usor,Teorie
-2,Python,if,5|6|7,1,Medie,Practic
-3,CSharp,class,1|3|5|7,2,Usor,Teorie
-4,HTML,div,10|20|30,3,Medie,Practic
-5,SQL,select,100|200|300|400,4,Greu,Teorie
-6,JavaScript,for,0|1|2|3|4,5,Usor,Practic
-7,C++,vector,7|8|9,6,Greu,Teorie
-8,Python,while,2|4|6|8,7,Medie,Practic
-9,Java,interface,10|11|12,8,Usor,Teorie
-10,CSharp,enum,1|2,9,Greu,Practic
-11,Python,Whats up,1|2|3|4,0,Usor,Practica
+1,C++,Ce operator se foloseste pentru alocarea dinamica a memoriei in C++?,alloc()|malloc()|allocate()|new,3,Usor,Sintaxa
+2,Java,Ce cuvant cheie se foloseste pentru mostenire in Java?,extends|implements|inherits|derives,0,Usor,Sintaxa
+3,Python,Cum se defineste o functie in Python?,func|define|def|function,2,Usor,Sintaxa
+4,General,Ce structura de date functioneaza pe principiul LIFO?,Queue|List|Tree|Stack,3,Mediu,Teorie
+5,C++,Ce inseamna OOP?,Object Oriented Programming|Open Object Protocol|Oriented Object Process|Online Object Programming,0,Usor,Teorie
+6,Java,Ce metoda este punctul de intrare intr-un program Java?,start()|run()|init()|main(),3,Usor,Sintaxa
+7,Python,test,1|2|3|4,0,Usor,Teorie
