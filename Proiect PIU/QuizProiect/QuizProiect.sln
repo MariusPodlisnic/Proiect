@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryUserAndIntrebari", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StocareData", "StocareData\StocareData.csproj", "{39DF4CDD-7BF7-49EC-81C4-C88B1B2A44C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizWPF", "QuizWPF\QuizWPF.csproj", "{D1EFCFE2-7ACE-4890-A6CC-124729C00BA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{39DF4CDD-7BF7-49EC-81C4-C88B1B2A44C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39DF4CDD-7BF7-49EC-81C4-C88B1B2A44C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39DF4CDD-7BF7-49EC-81C4-C88B1B2A44C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1EFCFE2-7ACE-4890-A6CC-124729C00BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1EFCFE2-7ACE-4890-A6CC-124729C00BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1EFCFE2-7ACE-4890-A6CC-124729C00BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1EFCFE2-7ACE-4890-A6CC-124729C00BA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

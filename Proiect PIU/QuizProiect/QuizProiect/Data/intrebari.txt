@@ -5,3 +5,4 @@
 5,C++,Ce inseamna OOP?,Object Oriented Programming|Open Object Protocol|Oriented Object Process|Online Object Programming,0,Usor,Teorie
 6,Java,Ce metoda este punctul de intrare intr-un program Java?,start()|run()|init()|main(),3,Usor,Sintaxa
 7,Python,test,1|2|3|4,0,Usor,Teorie
+8,Python,Salut ce mai faci,test1|test3|test2|test4,0,Usor,Teorie

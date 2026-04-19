@@ -1,0 +1,301 @@
+<Window x:Class="QuizWPF.AdaugaIntrebareWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Adaugă Întrebare Nouă"
+        Height="700" Width="620"
+        Background="#F5F5F5"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <!-- Label câmp -->
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#3A3A5C"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <!-- TextBox standard -->
+        <Style x:Key="InputBox" TargetType="TextBox">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#4A6CF7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- TextBox invalid (eroare) -->
+        <Style x:Key="InputBoxError" TargetType="TextBox" BasedOn="{StaticResource InputBox}">
+            <Setter Property="BorderBrush" Value="#DC3545"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="#FFF5F5"/>
+        </Style>
+
+        <!-- Label invalid -->
+        <Style x:Key="FieldLabelError" TargetType="Label" BasedOn="{StaticResource FieldLabel}">
+            <Setter Property="Foreground" Value="#DC3545"/>
+        </Style>
+
+        <!-- TextBlock eroare -->
+        <Style x:Key="ErrorMsg" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#DC3545"/>
+            <Setter Property="Margin" Value="2,3,0,0"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+
+        <!-- Buton principal -->
+        <Style x:Key="BtnPrimary" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#4A6CF7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3555E0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Buton secundar -->
+        <Style x:Key="BtnSecondary" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="Background" Value="#EEEEEE"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#DDDDDD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#3A3A5C">
+            <TextBlock Text="➕  Adaugă Întrebare Nouă"
+                       Foreground="White" FontSize="18" FontWeight="Bold"
+                       VerticalAlignment="Center" Margin="24,0"/>
+        </Border>
+
+        <!-- Formular -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="24,20">
+
+                <!-- Domeniu -->
+                <StackPanel Margin="0,0,0,14">
+                    <Label x:Name="LblDomeniu" Content="_Domeniu *"
+                           Style="{StaticResource FieldLabel}"
+                           Target="{Binding ElementName=TxtDomeniu}"/>
+                    <TextBox x:Name="TxtDomeniu"
+                             Style="{StaticResource InputBox}"
+                             ToolTip="Ex: C/C++, Java, Python, General"/>
+                    <TextBlock x:Name="ErrDomeniu"
+                               Text="Domeniul este obligatoriu (minim 2 caractere)."
+                               Style="{StaticResource ErrorMsg}"/>
+                </StackPanel>
+
+                <!-- Text întrebare -->
+                <StackPanel Margin="0,0,0,14">
+                    <Label x:Name="LblText" Content="_Text Întrebare *"
+                           Style="{StaticResource FieldLabel}"
+                           Target="{Binding ElementName=TxtTextIntrebare}"/>
+                    <TextBox x:Name="TxtTextIntrebare"
+                             Height="70"
+                             FontSize="13"
+                             Padding="10,8"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             BorderBrush="#CCCCCC"/>
+                    <TextBlock x:Name="ErrText"
+                               Text="Textul întrebării este obligatoriu (minim 10 caractere)."
+                               Style="{StaticResource ErrorMsg}"/>
+                </StackPanel>
+
+                <!-- Variante A și B -->
+                <Grid Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,0,14">
+                        <Label x:Name="LblVarA" Content="Varianta _A *"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=TxtVarA}"/>
+                        <TextBox x:Name="TxtVarA" Style="{StaticResource InputBox}"/>
+                        <TextBlock x:Name="ErrVarA"
+                                   Text="Varianta A este obligatorie."
+                                   Style="{StaticResource ErrorMsg}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="0,0,0,14">
+                        <Label x:Name="LblVarB" Content="Varianta _B *"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=TxtVarB}"/>
+                        <TextBox x:Name="TxtVarB" Style="{StaticResource InputBox}"/>
+                        <TextBlock x:Name="ErrVarB"
+                                   Text="Varianta B este obligatorie."
+                                   Style="{StaticResource ErrorMsg}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Variante C și D -->
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Label x:Name="LblVarC" Content="Varianta _C *"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=TxtVarC}"/>
+                        <TextBox x:Name="TxtVarC" Style="{StaticResource InputBox}"/>
+                        <TextBlock x:Name="ErrVarC"
+                                   Text="Varianta C este obligatorie."
+                                   Style="{StaticResource ErrorMsg}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Label x:Name="LblVarD" Content="Varianta _D *"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=TxtVarD}"/>
+                        <TextBox x:Name="TxtVarD" Style="{StaticResource InputBox}"/>
+                        <TextBlock x:Name="ErrVarD"
+                                   Text="Varianta D este obligatorie."
+                                   Style="{StaticResource ErrorMsg}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Răspuns corect și Dificultate -->
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Label x:Name="LblRaspuns" Content="_Răspuns Corect *"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=CmbRaspuns}"/>
+                        <ComboBox x:Name="CmbRaspuns"
+                                  Height="36" FontSize="13"
+                                  VerticalContentAlignment="Center"
+                                  BorderBrush="#CCCCCC">
+                            <ComboBoxItem Content="A (index 0)" Tag="0"/>
+                            <ComboBoxItem Content="B (index 1)" Tag="1"/>
+                            <ComboBoxItem Content="C (index 2)" Tag="2"/>
+                            <ComboBoxItem Content="D (index 3)" Tag="3"/>
+                        </ComboBox>
+                        <TextBlock x:Name="ErrRaspuns"
+                                   Text="Selectați răspunsul corect."
+                                   Style="{StaticResource ErrorMsg}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Label Content="_Dificultate"
+                               Style="{StaticResource FieldLabel}"
+                               Target="{Binding ElementName=CmbDificultate}"/>
+                        <ComboBox x:Name="CmbDificultate"
+                                  Height="36" FontSize="13"
+                                  VerticalContentAlignment="Center"
+                                  BorderBrush="#CCCCCC"
+                                  SelectedIndex="0">
+                            <ComboBoxItem Content="Ușor"/>
+                            <ComboBoxItem Content="Mediu"/>
+                            <ComboBoxItem Content="Greu"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Tip cunoștințe -->
+                <StackPanel Margin="0,0,0,14">
+                    <Label Content="Tip _Cunoștințe"
+                           Style="{StaticResource FieldLabel}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <CheckBox x:Name="ChkTeorie" Content="Teorie"
+                                  Margin="0,0,16,4" FontSize="13"/>
+                        <CheckBox x:Name="ChkPractica" Content="Practică"
+                                  Margin="0,0,16,4" FontSize="13"/>
+                        <CheckBox x:Name="ChkSintaxa" Content="Sintaxă"
+                                  Margin="0,0,16,4" FontSize="13"/>
+                        <CheckBox x:Name="ChkAlgoritmi" Content="Algoritmi"
+                                  Margin="0,0,16,4" FontSize="13"/>
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- Mesaj succes -->
+                <Border x:Name="PanelSucces"
+                        Background="#D4EDDA" CornerRadius="6"
+                        Padding="14,10" Margin="0,8,0,0"
+                        Visibility="Collapsed">
+                    <TextBlock Text="✔  Întrebarea a fost salvată cu succes în fișier!"
+                               Foreground="#155724" FontWeight="Bold" FontSize="13"/>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Butoane acțiune -->
+        <Border Grid.Row="2" Background="White"
+                BorderBrush="#EEEEEE" BorderThickness="0,1,0,0">
+            <Grid Margin="24,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Anulează"
+                        Style="{StaticResource BtnSecondary}"
+                        Click="OnAnuleaza"/>
+                <Button Grid.Column="2" Content="💾  Salvează Întrebarea"
+                        Style="{StaticResource BtnPrimary}"
+                        Click="OnSalveaza"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
