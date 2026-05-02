@@ -1,42 +1,35 @@
+using LibraryUserAndIntrebari;
+using StocareData;
+using System;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using LibraryUserAndIntrebari;
-using StocareData;
 
 namespace QuizWPF
 {
     public partial class AdaugaIntrebareWindow : Window
     {
-        // ─── Constante pentru validare ───────────────────────────────────────
-        private const int DOMENIU_MIN_LUNGIME    = 2;
-        private const int DOMENIU_MAX_LUNGIME    = 50;
-        private const int TEXT_MIN_LUNGIME       = 10;
-        private const int TEXT_MAX_LUNGIME       = 300;
-        private const int VARIANTA_MIN_LUNGIME   = 1;
-        private const int VARIANTA_MAX_LUNGIME   = 150;
-        // ─────────────────────────────────────────────────────────────────────
+        // ─── Constante validare ──────────────────────────────────────────────
+        private const int DOMENIU_MIN = 2, DOMENIU_MAX = 50;
+        private const int TEXT_MIN = 10, TEXT_MAX = 300;
+        private const int VARIANTA_MIN = 1, VARIANTA_MAX = 150;
 
         private readonly AdministrareIntrebariFisierText _adminIntrebari;
 
-        // Culori reutilizabile
-        private static readonly SolidColorBrush BrushLabelNormal =
-            new SolidColorBrush(Color.FromRgb(58, 58, 92));   // #3A3A5C
-        private static readonly SolidColorBrush BrushLabelError =
-            new SolidColorBrush(Color.FromRgb(220, 53, 69));  // #DC3545
-        private static readonly SolidColorBrush BrushBorderNormal =
-            new SolidColorBrush(Color.FromRgb(204, 204, 204));
-        private static readonly SolidColorBrush BrushBorderError =
-            new SolidColorBrush(Color.FromRgb(220, 53, 69));
-        private static readonly SolidColorBrush BrushBgNormal =
-            new SolidColorBrush(Colors.White);
-        private static readonly SolidColorBrush BrushBgError =
-            new SolidColorBrush(Color.FromRgb(255, 245, 245));
+        // Perii reutilizabile
+        private static readonly SolidColorBrush BrushLabelNormal = new(Color.FromRgb(58, 58, 92));
+        private static readonly SolidColorBrush BrushLabelError = new(Color.FromRgb(220, 53, 69));
+        private static readonly SolidColorBrush BrushBorderNormal = new(Color.FromRgb(204, 204, 221));
+        private static readonly SolidColorBrush BrushBorderError = new(Color.FromRgb(220, 53, 69));
+        private static readonly SolidColorBrush BrushBgNormal = new(Colors.White);
+        private static readonly SolidColorBrush BrushBgError = new(Color.FromRgb(255, 245, 245));
 
         public AdaugaIntrebareWindow(AdministrareIntrebariFisierText adminIntrebari)
         {
             InitializeComponent();
             _adminIntrebari = adminIntrebari;
+            DpDataCreare.SelectedDate = DateTime.Today;
         }
 
         // ─── Salvare ─────────────────────────────────────────────────────────
@@ -44,22 +37,14 @@ namespace QuizWPF
         {
             PanelSucces.Visibility = Visibility.Collapsed;
 
-            if (!ValidareFormular())
-                return;
+            if (!ValidareFormular()) return;
 
-            // Construiește obiectul Intrebare
-            string domeniu = TxtDomeniu.Text.Trim();
-            string text    = TxtTextIntrebare.Text.Trim();
-            string[] variante = {
-                TxtVarA.Text.Trim(),
-                TxtVarB.Text.Trim(),
-                TxtVarC.Text.Trim(),
-                TxtVarD.Text.Trim()
-            };
+            int raspunsCorect = RbA.IsChecked == true ? 0
+                              : RbB.IsChecked == true ? 1
+                              : RbC.IsChecked == true ? 2
+                              : 3; // RbD
 
-            int raspunsCorect = CmbRaspuns.SelectedIndex; // 0=A, 1=B, 2=C, 3=D
-
-            Dificultate dificultate = CmbDificultate.SelectedIndex switch
+            Dificultate dif = CmbDificultate.SelectedIndex switch
             {
                 1 => Dificultate.Mediu,
                 2 => Dificultate.Greu,
@@ -67,56 +52,57 @@ namespace QuizWPF
             };
 
             TipCunostinte tip = TipCunostinte.Niciuna;
-            if (ChkTeorie.IsChecked   == true) tip |= TipCunostinte.Teorie;
+            if (ChkTeorie.IsChecked == true) tip |= TipCunostinte.Teorie;
             if (ChkPractica.IsChecked == true) tip |= TipCunostinte.Practica;
-            if (ChkSintaxa.IsChecked  == true) tip |= TipCunostinte.Sintaxa;
-            if (ChkAlgoritmi.IsChecked== true) tip |= TipCunostinte.Algoritmi;
+            if (ChkSintaxa.IsChecked == true) tip |= TipCunostinte.Sintaxa;
+            if (ChkAlgoritmi.IsChecked == true) tip |= TipCunostinte.Algoritmi;
 
-            Intrebare intrebare = new Intrebare(0, domeniu, text, variante,
-                                                raspunsCorect, dificultate, tip);
+            var intrebare = new Intrebare(0,
+                TxtDomeniu.Text.Trim(),
+                TxtTextIntrebare.Text.Trim(),
+                new[] { TxtVarA.Text.Trim(), TxtVarB.Text.Trim(),
+                        TxtVarC.Text.Trim(), TxtVarD.Text.Trim() },
+                raspunsCorect, dif, tip);
+
             _adminIntrebari.AddIntrebare(intrebare);
-
             PanelSucces.Visibility = Visibility.Visible;
             ResetFormular();
         }
 
-        // ─── Validare completă ───────────────────────────────────────────────
+        // ─── Validare ────────────────────────────────────────────────────────
         private bool ValidareFormular()
         {
-            bool valid = true;
+            bool ok = true;
 
-            // Domeniu
-            valid &= ValidareCamp(
-                TxtDomeniu, LblDomeniu, ErrDomeniu,
-                val => val.Length >= DOMENIU_MIN_LUNGIME && val.Length <= DOMENIU_MAX_LUNGIME,
-                $"Domeniul trebuie să aibă între {DOMENIU_MIN_LUNGIME} și {DOMENIU_MAX_LUNGIME} caractere.");
+            ok &= ValidareCamp(TxtDomeniu, LblDomeniu, ErrDomeniu,
+                v => v.Length >= DOMENIU_MIN && v.Length <= DOMENIU_MAX,
+                $"Domeniu invalid ({DOMENIU_MIN}–{DOMENIU_MAX} caractere).");
 
-            // Text întrebare
-            valid &= ValidareCampTextBox(
-                TxtTextIntrebare, LblText, ErrText,
-                val => val.Length >= TEXT_MIN_LUNGIME && val.Length <= TEXT_MAX_LUNGIME,
-                $"Textul trebuie să aibă între {TEXT_MIN_LUNGIME} și {TEXT_MAX_LUNGIME} caractere.");
+            ok &= ValidareCampMultiRand(TxtTextIntrebare, LblText, ErrText,
+                v => v.Length >= TEXT_MIN && v.Length <= TEXT_MAX,
+                $"Textul trebuie să aibă {TEXT_MIN}–{TEXT_MAX} caractere.");
 
-            // Variante
-            valid &= ValidareCamp(TxtVarA, LblVarA, ErrVarA,
-                val => val.Length >= VARIANTA_MIN_LUNGIME && val.Length <= VARIANTA_MAX_LUNGIME,
-                $"Varianta trebuie să aibă între {VARIANTA_MIN_LUNGIME} și {VARIANTA_MAX_LUNGIME} caractere.");
-            valid &= ValidareCamp(TxtVarB, LblVarB, ErrVarB,
-                val => val.Length >= VARIANTA_MIN_LUNGIME && val.Length <= VARIANTA_MAX_LUNGIME,
-                $"Varianta trebuie să aibă între {VARIANTA_MIN_LUNGIME} și {VARIANTA_MAX_LUNGIME} caractere.");
-            valid &= ValidareCamp(TxtVarC, LblVarC, ErrVarC,
-                val => val.Length >= VARIANTA_MIN_LUNGIME && val.Length <= VARIANTA_MAX_LUNGIME,
-                $"Varianta trebuie să aibă între {VARIANTA_MIN_LUNGIME} și {VARIANTA_MAX_LUNGIME} caractere.");
-            valid &= ValidareCamp(TxtVarD, LblVarD, ErrVarD,
-                val => val.Length >= VARIANTA_MIN_LUNGIME && val.Length <= VARIANTA_MAX_LUNGIME,
-                $"Varianta trebuie să aibă între {VARIANTA_MIN_LUNGIME} și {VARIANTA_MAX_LUNGIME} caractere.");
+            ok &= ValidareCamp(TxtVarA, LblVarA, ErrVarA,
+                v => v.Length >= VARIANTA_MIN && v.Length <= VARIANTA_MAX,
+                $"Varianta trebuie să aibă {VARIANTA_MIN}–{VARIANTA_MAX} caractere.");
+            ok &= ValidareCamp(TxtVarB, LblVarB, ErrVarB,
+                v => v.Length >= VARIANTA_MIN && v.Length <= VARIANTA_MAX,
+                $"Varianta trebuie să aibă {VARIANTA_MIN}–{VARIANTA_MAX} caractere.");
+            ok &= ValidareCamp(TxtVarC, LblVarC, ErrVarC,
+                v => v.Length >= VARIANTA_MIN && v.Length <= VARIANTA_MAX,
+                $"Varianta trebuie să aibă {VARIANTA_MIN}–{VARIANTA_MAX} caractere.");
+            ok &= ValidareCamp(TxtVarD, LblVarD, ErrVarD,
+                v => v.Length >= VARIANTA_MIN && v.Length <= VARIANTA_MAX,
+                $"Varianta trebuie să aibă {VARIANTA_MIN}–{VARIANTA_MAX} caractere.");
 
-            // Răspuns corect
-            if (CmbRaspuns.SelectedIndex < 0)
+            // Validare RadioButton răspuns corect
+            bool raspunsSelectat = RbA.IsChecked == true || RbB.IsChecked == true
+                                || RbC.IsChecked == true || RbD.IsChecked == true;
+            if (!raspunsSelectat)
             {
                 LblRaspuns.Foreground = BrushLabelError;
                 ErrRaspuns.Visibility = Visibility.Visible;
-                valid = false;
+                ok = false;
             }
             else
             {
@@ -124,73 +110,49 @@ namespace QuizWPF
                 ErrRaspuns.Visibility = Visibility.Collapsed;
             }
 
-            return valid;
+            return ok;
         }
 
-        /// <summary>Validare pentru TextBox cu un singur rând.</summary>
-        private bool ValidareCamp(TextBox txtBox, Label label, TextBlock errMsg,
-                                   Func<string, bool> regula, string mesajEroare)
+        private bool ValidareCamp(TextBox txt, Label lbl, TextBlock err,
+            Func<string, bool> regula, string mesaj)
         {
-            string val = txtBox.Text.Trim();
+            string val = txt.Text.Trim();
             if (!regula(val))
             {
-                label.Foreground      = BrushLabelError;
-                errMsg.Text           = mesajEroare;
-                errMsg.Visibility     = Visibility.Visible;
-                txtBox.BorderBrush    = BrushBorderError;
-                txtBox.BorderThickness= new Thickness(2);
-                txtBox.Background     = BrushBgError;
+                lbl.Foreground = BrushLabelError;
+                err.Text = mesaj;
+                err.Visibility = Visibility.Visible;
+                txt.BorderBrush = BrushBorderError;
+                txt.BorderThickness = new Thickness(2);
+                txt.Background = BrushBgError;
                 return false;
             }
-            label.Foreground      = BrushLabelNormal;
-            errMsg.Visibility     = Visibility.Collapsed;
-            txtBox.BorderBrush    = BrushBorderNormal;
-            txtBox.BorderThickness= new Thickness(1);
-            txtBox.Background     = BrushBgNormal;
+            lbl.Foreground = BrushLabelNormal;
+            err.Visibility = Visibility.Collapsed;
+            txt.BorderBrush = BrushBorderNormal;
+            txt.BorderThickness = new Thickness(1);
+            txt.Background = BrushBgNormal;
             return true;
         }
 
-        /// <summary>Validare pentru TextBox multi-rând (fără stilul inline).</summary>
-        private bool ValidareCampTextBox(TextBox txtBox, Label label, TextBlock errMsg,
-                                          Func<string, bool> regula, string mesajEroare)
-        {
-            string val = txtBox.Text.Trim();
-            if (!regula(val))
-            {
-                label.Foreground      = BrushLabelError;
-                errMsg.Text           = mesajEroare;
-                errMsg.Visibility     = Visibility.Visible;
-                txtBox.BorderBrush    = BrushBorderError;
-                txtBox.BorderThickness= new Thickness(2);
-                txtBox.Background     = BrushBgError;
-                return false;
-            }
-            label.Foreground      = BrushLabelNormal;
-            errMsg.Visibility     = Visibility.Collapsed;
-            txtBox.BorderBrush    = BrushBorderNormal;
-            txtBox.BorderThickness= new Thickness(1);
-            txtBox.Background     = BrushBgNormal;
-            return true;
-        }
+        private bool ValidareCampMultiRand(TextBox txt, Label lbl, TextBlock err,
+            Func<string, bool> regula, string mesaj)
+            => ValidareCamp(txt, lbl, err, regula, mesaj);
 
-        // ─── Reset formular după salvare ─────────────────────────────────────
+        // ─── Reset ───────────────────────────────────────────────────────────
         private void ResetFormular()
         {
             TxtDomeniu.Clear();
             TxtTextIntrebare.Clear();
             TxtVarA.Clear(); TxtVarB.Clear();
             TxtVarC.Clear(); TxtVarD.Clear();
-            CmbRaspuns.SelectedIndex    = -1;
+            RbA.IsChecked = RbB.IsChecked = RbC.IsChecked = RbD.IsChecked = false;
             CmbDificultate.SelectedIndex = 0;
-            ChkTeorie.IsChecked   = false;
-            ChkPractica.IsChecked = false;
-            ChkSintaxa.IsChecked  = false;
-            ChkAlgoritmi.IsChecked= false;
+            ChkTeorie.IsChecked = ChkPractica.IsChecked =
+            ChkSintaxa.IsChecked = ChkAlgoritmi.IsChecked = false;
+            DpDataCreare.SelectedDate = DateTime.Today;
         }
 
-        private void OnAnuleaza(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void OnAnuleaza(object sender, RoutedEventArgs e) => Close();
     }
 }
